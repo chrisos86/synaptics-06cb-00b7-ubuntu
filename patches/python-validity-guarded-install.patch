@@ -1,0 +1,30 @@
+diff --git a/debian/python3-validity.postinst b/debian/python3-validity.postinst
+index 192593e..55c5dc2 100644
+--- a/debian/python3-validity.postinst
++++ b/debian/python3-validity.postinst
+@@ -5,12 +5,6 @@ set -e
+ #DEBHELPER#
+ 
+ if [ "$1" = "configure" ]; then
+-    validity-sensors-firmware || true
+     systemctl daemon-reload || true
+     udevadm control --reload-rules || true
+-    udevadm trigger || true
+-    if [ -x /usr/sbin/pam-auth-update ]; then
+-        pam-auth-update --package --enable fprintd || true
+-    fi
+ fi
+-
+diff --git a/debian/rules b/debian/rules
+index 12b8137..71b8829 100755
+--- a/debian/rules
++++ b/debian/rules
+@@ -9,7 +9,7 @@ override_dh_auto_test:
+ 	PYTHONPATH=$(CURDIR) python3 -m unittest discover -s tests -v
+ 
+ override_dh_installsystemd:
+-	dh_installsystemd --name=python3-validity
++	dh_installsystemd --name=python3-validity --no-start
+ 
+ override_dh_auto_install:
+ 	python3 ./setup.py install --root=$(CURDIR)/debian/tmp --prefix=/usr --install-layout=deb
